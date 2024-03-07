@@ -1,0 +1,52 @@
+#!/usr/bin/env Rscript
+args = commandArgs(trailingOnly=TRUE)
+
+library(simGWAS)
+library(stringr)
+
+# test if there is at least one argument: if not, return an error
+if (length(args)==0) {
+  vcf_file <- '1KGP_hg19_APOE_1MB.vcf.gz'
+  sim_path <- 'simulated_summary_stats'
+  seed <- 42
+  n_CV <- 2
+  n_ctrl <- 10000
+  n_case <- 10000
+} else {
+  # default output file
+  vcf_file <- args[1]
+  sim_path <- args[2]
+  seed <- args[3]
+  n_CV <- args[4]
+  n_ctrl <- args[5]
+  n_case <- args[6]
+}
+
+freq <- read.table(paste0(sim_path,'/',vcf_file,"_",seed,'/freq_.tsv'),
+              header=T,check.names = FALSE)
+
+snps <- unlist(read.table(paste0(sim_path,"/",vcf_file,"_snp_maf_0.05.snp"),
+              header=F)
+
+CV <- sample(snps, n_CV)
+g1 <- c(1.4,1.2)# Odds Ratios - fix this
+
+FP <- make_GenoProbList(snps=1:length(snps),W=which(snps %in% CV),freq=freq)
+
+zexp <- expected_z_score(N0=n_ctrl, # number of controls
+              N1=n_case, # number of cases
+              snps=snps, # column names in freq of SNPs for which Z scores should be generated
+              W=CV, # causal variants, subset of snps
+              gamma.W=log(g1), # odds ratios
+              freq=freq, # reference haplotypes
+              GenoProbList=FP) # FP above
+
+ss_out <- data.frame(snps = snps, z = zexp, p.value = (pnorm(-abs(zexp)) * 2), CV=0, OR=1)
+
+for (i in 1:n_CV) {
+    ss_out$CV[ss_out$snp==CV[i]] <- i
+    ss_out$OR[ss_out$snp==CV[i]] <- g1[i]
+}
+
+write.table(ss_out, paste0(sim_path,'/',vcf_file,"_",seed,'/ss_',n_CV,'_CV_',n_ctrl,'_ctrl_',n_case,'_case.tsv'),
+              col.names=T, row.names=F, quote=F)
