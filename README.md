@@ -78,6 +78,13 @@ See https://github.com/FinucaneLab/fine-mapping-inf
 
 # Usage
 
+The simulations folder contains all of the data and code to 1) Generate simulated summary statistics from a GWAS for 21 different loci using simGWAS and 2) run fine-mapping tools on these summary results and finally 3) analyze accuracy and resource requirements from the various approaches.  
+
+
+# In progress
+
+Currently simGWAS is running and there are 21 loci available. Additionally, AD GWAS data for the APOE locus from PAN-UKBB are downloaded. SuSiE has been successfully run in a notebook but is being reworked into an R script to improve benchmarking and the ability to test across a greater number of simulations. None of the other fine-mapping methods have been run successfully but will be by next week and put in scripts to allow for fast comparisons of the various methods. The AD GWAS has been difficult to fine-map due to LD matrices, but I am hoping to be able to donwload a better matching LD matrix from a package currenlty downloading. 
+
 # Credits
 Repo created by Weston Elison for CS_284, taught by Melissa Gymrek. 
 
