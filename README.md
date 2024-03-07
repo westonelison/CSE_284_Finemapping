@@ -70,12 +70,19 @@ python setup.py bdist_wheel
 pip install .
 ```
 Once completed, run  
-
-# Usage
-
-# Credits
 ```
 python run_fine_mapping.py -h
 ```
 
 See https://github.com/FinucaneLab/fine-mapping-inf
+
+# Usage
+
+# Credits
+Repo created by Weston Elison for CS_284, taught by Melissa Gymrek. 
+
+Benner, C., Spencer, C. C., Havulinna, A. S., Salomaa, V., Ripatti, S., & Pirinen, M. (2016). FINEMAP: efficient variable selection using summary data from genome-wide association studies. Bioinformatics (Oxford, England), 32(10), 1493–1501. https://doi.org/10.1093/bioinformatics/btw018
+Cui, R., Elzur, R.A., Kanai, M. et al. Improving fine-mapping by modeling infinitesimal effects. Nat Genet 56, 162–169 (2024). https://doi.org/10.1038/s41588-023-01597-3
+Fortune, M. D., & Wallace, C. (2019). simGWAS: a fast method for simulation of large scale case-control GWAS summary statistics. Bioinformatics (Oxford, England), 35(11), 1901–1906. https://doi.org/10.1093/bioinformatics/bty898
+G. Wang, G., Sarkar, A., Carbonetto, P. & Stephens, M. (2020). A simple new approach to variable selection in regression, with application to genetic fine mapping. Journal of the Royal Statistical Society, Series B 82, 1273–1300. https://doi.org/10.1111/rssb.12388
+Zou, Y., Carbonetto, P., Wang, G. & Stephens, M. (2022). Fine-mapping from summary data with the "Sum of Single Effects" model. PLoS Genetics 18, e1010299. https://doi.org/10.1371/journal.pgen.1010299
