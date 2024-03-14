@@ -1,0 +1,133 @@
+#!/usr/bin/env Rscript
+args = commandArgs(trailingOnly=TRUE)
+
+library(dplyr)
+library(ggplot2)
+library(susieR)
+library(stringr)
+library(data.table)
+library(ggplot2)
+library(ggrepel)
+
+# test if there is at least one argument: if not, return an error
+if (length(args)==0) {
+  Region <- '1KGP_hg19_CEL_1MB.vcf.gz'
+  seed.list <- c(1,2,3,4,5)
+  n_CV <- 2
+  n_Ctrl <- 20000
+  n_Case <- 2000
+} else {
+  # default output file
+  Region <- args[1]
+  seed.list <- as.integer(str_split(args[2],',', simplify=T))
+  n_CV <- as.integer(args[3])
+  n_Ctrl <- as.integer(args[4])
+  n_Case <- as.integer(args[5])
+}
+
+# Read vcf for snp info
+
+vcf_maf <- read.table(paste0("simulation_summary_stats/",Region,"_snp_maf_0.05.tsv"),
+           header=F, sep='\t')
+
+#dim(vcf_maf)
+#head(vcf_maf)
+
+vcf_maf_for_maf <- select(vcf_maf, rsid=V3, V8)
+vcf_maf_for_maf$maf <- stringr::str_extract(vcf_maf_for_maf$V8, "AF=\\d+\\.\\d+")
+vcf_maf_for_maf <- select(vcf_maf_for_maf, -V8)
+vcf_maf_for_maf$maf <- as.numeric(stringr::str_replace(vcf_maf_for_maf$maf, "AF=",""))
+vcf_maf_for_maf$maf[vcf_maf_for_maf$maf > 0.5] <- 1-(vcf_maf_for_maf$maf[vcf_maf_for_maf$maf > 0.5])
+
+snps <- unlist(read.table(paste0('simulation_summary_stats/',Region,'_snp_maf_0.05.snp')))
+#head(vcf_maf_for_maf)
+
+# Start loop
+
+for (seed in seed.list) {
+
+	# Load summary statistics
+
+	sum.stats <- read.table(paste0('simulation_summary_stats/',
+                               Region,'_',seed,
+                               '/ss_',n_CV,'_CV_',n_Ctrl,'_ctrl_',n_Case,'_case.tsv'), header=T)
+
+	#dim(sum.stats)
+	#head(sum.stats)
+
+	# FINEMAP
+
+	sum.stats.maf <- left_join(left_join(sum.stats, vcf_maf_for_maf, join_by(snps==rsid)),
+                           select(vcf_maf, chr=V1, pos=V2, snps=V3, ref=V4, alt=V5))
+
+	#sum(is.na(sum.stats.maf$maf))
+	#dim(sum.stats.maf)
+	#head(sum.stats.maf)
+
+	finemap.in <- select(sum.stats.maf, rsid=snps, chromosome=chr,
+            position=pos, allele1=ref, allele2=alt, maf=maf, 
+            beta=z)
+	finemap.in$se <- 1
+
+	write.table(finemap.in,
+            paste0('simulation_summary_stats/',
+                               Region,'_',seed,
+                               '/ss_',n_CV,'_CV_',n_Ctrl,'_ctrl_',n_Case,'_case.finemap.z'),
+            col.names=T, row.names=F, quote=F, sep=' ')
+
+	dir.create(paste0('finemapping_results/',Region,'_',seed), recursive=T)
+
+	finemap_master <- data.frame(z=paste0('simulation_summary_stats/',
+                               Region,'_',seed,
+                               '/ss_',n_CV,'_CV_',n_Ctrl,'_ctrl_',n_Case,'_case.finemap.z'),
+           ld=paste0('1KGP_Regions/',Region,'.r.maf.order.ld'),
+           snp=paste0('finemapping_results/',
+                               Region,'_',seed,
+                               '/ss_',n_CV,'_CV_',n_Ctrl,'_ctrl_',n_Case,'_case.finemap.snp'),
+           config=paste0('finemapping_results/',
+                               Region,'_',seed,
+                               '/ss_',n_CV,'_CV_',n_Ctrl,'_ctrl_',n_Case,'_case.finemap.config'),
+           cred=paste0('finemapping_results/',
+                               Region,'_',seed,
+                               '/finemapping_results',n_CV,'_CV_',n_Ctrl,'_ctrl_',n_Case,'_case.finemap.cred'),
+           log=paste0('finemapping_results/',
+                               Region,'_',seed,
+                               '/ss_',n_CV,'_CV_',n_Ctrl,'_ctrl_',n_Case,'_case.finemap.log'),
+           n_samples=(n_Ctrl + n_Case))
+	#finemap_master
+
+	write.table(finemap_master,paste0('finemapping_results/',
+                               Region,'_',seed,
+                               '/ss_',n_CV,'_CV_',n_Ctrl,'_ctrl_',n_Case,'_case.finemap.master'),
+           quote=F, col.names=T, row.names=F, sep=';')
+
+	write.table(paste0('finemap --sss --in-files ', 'finemapping_results/',
+                               Region,'_',seed,
+                               '/ss_',n_CV,'_CV_',n_Ctrl,'_ctrl_',n_Case,'_case.finemap.master'),
+           paste0('finemapping_results/',
+                               Region,'_',seed,
+                               '/ss_',n_CV,'_CV_',n_Ctrl,'_ctrl_',n_Case,'_case.finemap.sh'),
+           quote=F, col.names=F, row.names=F)
+
+
+	# Infinitesimal Inputs
+
+	write.table(paste0('python ../tools/fine-mapping-inf/run_fine_mapping.py --sumstats ', 
+                   'simulation_summary_stats/',
+                               Region,'_',seed,
+                               '/ss_',n_CV,'_CV_',n_Ctrl,'_ctrl_',n_Case,'_case.finemap.z',
+                   ' --z-col-name beta --ld-file ',
+                   '1KGP_Regions/',Region,'.r.maf.order.ld.gz'
+                   ,' --n ', (n_Ctrl + n_Case),
+                   ' --save-tsv --output-prefix ',
+                   'finemapping_results/',
+                               Region,'_',seed,
+                               '/ss_',n_CV,'_CV_',n_Ctrl,'_ctrl_',n_Case,'_case.inf'
+                   ,' > ', 'finemapping_results/',
+                               Region,'_',seed,
+                               '/ss_',n_CV,'_CV_',n_Ctrl,'_ctrl_',n_Case,'_case.inf.log'),
+           paste0('finemapping_results/',
+                               Region,'_',seed,
+                               '/ss_',n_CV,'_CV_',n_Ctrl,'_ctrl_',n_Case,'_case.inf.sh'),
+           quote=F, col.names=F, row.names=F)
+}
