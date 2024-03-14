@@ -1,0 +1,31 @@
+PLINK v1.90b6.24 64-bit (6 Jun 2021)
+Options in effect:
+  --keep-allele-order
+  --matrix
+  --out 1KGP_hg19_APOE_1MB_EUR_PANUKBB
+  --r
+  --vcf 1KGP_hg19_APOE_1MB_EUR_PANUKBB.vcf.gz
+
+Hostname: ophelia.ucsd.edu
+Working directory: /nfs/lab/welison/Other_Tasks/CSE_284/Finemapping/AD/panukbb_AD
+Start time: Thu Mar 14 10:33:04 2024
+
+Note: --matrix flag deprecated.  Migrate to "--distance ibs flat-missing",
+"--r2 square", etc.
+Random number seed: 1710437584
+1546813 MB RAM detected; reserving 773406 MB for main workspace.
+--vcf: 1KGP_hg19_APOE_1MB_EUR_PANUKBB-temporary.bed +
+1KGP_hg19_APOE_1MB_EUR_PANUKBB-temporary.bim +
+1KGP_hg19_APOE_1MB_EUR_PANUKBB-temporary.fam written.
+2667 variants loaded from .bim file.
+503 people (0 males, 0 females, 503 ambiguous) loaded from .fam.
+Ambiguous sex IDs written to 1KGP_hg19_APOE_1MB_EUR_PANUKBB.nosex .
+Using up to 95 threads (change this with --threads).
+Before main variant filters, 503 founders and 0 nonfounders present.
+Calculating allele frequencies... done.
+Total genotyping rate is in [0.9999995, 1).
+2667 variants and 503 people pass filters and QC.
+Note: No phenotypes present.
+--r square to 1KGP_hg19_APOE_1MB_EUR_PANUKBB.ld ... done.
+
+End time: Thu Mar 14 10:33:35 2024
