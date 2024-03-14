@@ -1,7 +1,0 @@
-https://docs.google.com/spreadsheets/d/1AeeADtT0U1AukliiNyiVzVRdLYPkTbruQSk38DeutU8/edit#gid=1450719288
-
-
-wget https://pan-ukb-us-east-1.s3.amazonaws.com/sumstats_flat_files/categorical-20002-both_sexes-1263.tsv.bgz
-wget https://pan-ukb-us-east-1.s3.amazonaws.com/sumstats_flat_files_tabix/categorical-20002-both_sexes-1263.tsv.bgz.tbi
-
-Then filtered to chr19 using R and saved output.
