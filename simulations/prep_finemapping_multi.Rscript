@@ -89,7 +89,7 @@ for (seed in seed.list) {
                                '/ss_',n_CV,'_CV_',n_Ctrl,'_ctrl_',n_Case,'_case.finemap.config'),
            cred=paste0('finemapping_results/',
                                Region,'_',seed,
-                               '/finemapping_results',n_CV,'_CV_',n_Ctrl,'_ctrl_',n_Case,'_case.finemap.cred'),
+                               '/ss_',n_CV,'_CV_',n_Ctrl,'_ctrl_',n_Case,'_case.finemap.cred'),
            log=paste0('finemapping_results/',
                                Region,'_',seed,
                                '/ss_',n_CV,'_CV_',n_Ctrl,'_ctrl_',n_Case,'_case.finemap.log'),
