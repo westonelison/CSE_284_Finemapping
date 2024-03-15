@@ -1,4 +1,27 @@
-This folder contains all the information to generate simulated GWAS sumamry statistics and fine-map them. There are a series of scripts which will be covered in order.
+# Introduction
+
+This folder contains all the information to generate simulated GWAS sumamry statistics and fine-map them. This readME will present the direct way to run all of this, and then go through each of the scripts.
+
+# Run all
+```
+#In bash
+cd 1KGP_Regions
+bash prep_all_vcfs.sh
+bash make_ld_r.sh
+
+cd ..
+
+bash generate_all_sum_stats.sh
+bash prep_finemapping_1_CV_balanced.sh
+
+bash run_FINEMAP_1_CV_balanced.sh
+bash run_infinitesimal_1_CV_balanced.sh
+bash run_SuSiE_1_CV_balanced.sh
+```
+
+The downstream analysis is not automated, but there is a notebook to look at a single region: Examine_Locus.ipynb
+
+# Full Details
 
 ### Prepare simGWAS inputs
 
@@ -14,6 +37,15 @@ There is also a script to prep all the vcfs in the 1KGP_Regions directoy, prep_a
 
 ```
 bash prep_all_vcfs.sh
+```
+
+### Prep LD
+
+We also need LD matrices, which we will do with plink1.9. Run make_ld_r.sh from the 1KGP_Regions directory for this.
+
+```
+#In bash
+bash make_ld_r.sh
 ```
 
 ### Run simGWAS
@@ -58,7 +90,17 @@ This makes a directory labeled finemapping_results, which has a directory for ea
 
 ### Fine-map
 
-run_FINEMAP_1_CV_balanced.sh and run_infinitesimal_1_CV_balanced.sh will run fine-mapping on the results for each vcf for seeds 1-50 for 1 causal variant and a balanced design (20000 cases, 20000 controls). The results are saved in the respective vcf/seed folders. The SuSiE-Inf outputs are in a file along the lines ss_1_CV_20000_ctrl_20000_case.inf.susieinf.bgz, which has a column 'prob' which are pips and a column 'cs' which are the credible sets. The results for FINEMAP-Inf are in ss_1_CV_20000_ctrl_20000_case.inf.finemapinf.bgz. This file has pip in 'prob' but no 'cs' column. ss_1_CV_20000_ctrl_20000_case.finemap.snp has the FINEMAP results per snp including pips in a 'prob' column, and finemapping_results1_CV_20000_ctrl_20000_case.finemap.cred{#} file that is credible sets at different number of causal snps. Additionally, for time for running are saved in ss_1_CV_20000_ctrl_20000_case.inf.time and ss_1_CV_20000_ctrl_20000_case.finemap.time.
+run_FINEMAP_1_CV_balanced.sh and run_infinitesimal_1_CV_balanced.sh will run fine-mapping on the results for each vcf for seeds 1-50 for 1 causal variant and a balanced design (20000 cases, 20000 controls). 
+
+The results are saved in the respective vcf/seed folders. 
+
+The SuSiE-Inf outputs are in a file along the lines ss_1_CV_20000_ctrl_20000_case.inf.susieinf.bgz, which has a column 'prob' which are pips and a column 'cs' which are the credible sets. 
+
+The results for FINEMAP-Inf are in ss_1_CV_20000_ctrl_20000_case.inf.finemapinf.bgz. This file has pip in 'prob' but no 'cs' column. 
+
+ss_1_CV_20000_ctrl_20000_case.finemap.snp has the FINEMAP results per snp including pips in a 'prob' column, and finemapping_results1_CV_20000_ctrl_20000_case.finemap.cred{#} file that is credible sets at different number of causal snps. 
+
+Additionally, for time for running are saved in ss_1_CV_20000_ctrl_20000_case.inf.time and ss_1_CV_20000_ctrl_20000_case.finemap.time.
 
 ```
 bash run_FINEMAP_1_CV_balanced.sh
@@ -74,6 +116,12 @@ Rscript --vanilla run_SuSiE.Rscript 1KGP_hg19_APOE_1MB.vcf.gz 42 1 20000 20000
 
 This is wrapped into a bash wrapper called bash run_SuSiE_1_CV_balanced.sh which will fine-map the gwas summary statistics for each vcf for seeds 1-50 for a balanced design (20k control, 20k cases).
 
+Outputs can be found in a folder per vcf/seed. You will find a file containg credible sets (something like ss_1_CV_20000_ctrl_20000_case.susie.cs), GWAS summary stats with the pip added (ss_1_CV_20000_ctrl_20000_case.susie.sum.stat.pip), per snp probabilites (ss_1_CV_20000_ctrl_20000_case.susie.snp), and run time and log (ss_1_CV_20000_ctrl_20000_case.susie.time).
+
 ```
 bash run_SuSiE_1_CV_balanced.sh
 ```
+
+### Look at the outputs
+
+The notebook Examine_Locus.ipynb can be used to examine a specific simulation across tools.
