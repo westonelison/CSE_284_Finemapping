@@ -54,5 +54,7 @@ Finally, this has been put into a bash script to go through multiple vcfs. This 
 ```
 bash prep_finemapping_1_CV_balanced.sh
 ```
+This makes a directory labeled finemapping_results, which has a directory for each vcf/seed. In these directories it makes two commands, ss_{# causal varaints}_CV_{# controls}_ctrl_{# of cases}_case.finemap.sh and ss_{# causal varaints}_CV_{# controls}_ctrl_{# of cases}_case.inf.sh which will run FINEMAP and the infinitesimal methods (FINEMAP-Inf and SuSiE-Inf).
 
 ### Fine-map
+
