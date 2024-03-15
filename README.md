@@ -13,16 +13,25 @@ contain the packages we need (simGWAS, FINEMAP, SuSiE and SuSiE-Inf/FINEMAP-Inf)
 
 The installation of these tools are based on the instructions found on their respective websites. I found no issue with installing all of them concurrently.  
 
-I prefer to set up conda envirmonets using the mamba solver when creating analysis specific programming contexts:
+I prefer to set up conda envirmonets using the mamba solver when creating analysis specific programming contexts. Edit this code to say conda instead of mamba if mamba isn't installed:
 
+The entire installation is wrapped up in setup.sh which should be run from this directory. It will make a tools directory and install the separate tools and make a conda environment.
 ```
-mamba create -n simGWAS r-base python
+setup.sh
+```
+
+# Manual Install
+
+Create conda environment in bash
+``` 
+# In bash (terminal)
+mamba create -n simGWAS r-base python r-devtools r-ggplot2 r-dplyr r-stringr r-data.table r-ggrepel r-remotes -c conda-forge
 mamba activate simGWAS
 ```
 
 #### simGWAS
 ```
-install.packages("devtools") # if not already installed
+# In R
 devtools::install_github("chr1swallace/simGWAS")
 ```
 
@@ -30,18 +39,21 @@ See https://github.com/chr1swallace/simGWAS/blob/master/FAQ.md
 
 #### FINEMAP
 ```
+# In bash
+cd tools
 wget http://www.christianbenner.com/finemap_v1.4.1_x86_64.tgz
 tar -xzvf finemap_v1.4.1_x86_64.tgz
 mkdir -p ~/bin
 cp ./finemap_v1.4.1_x86_64/finemap_v1.4.1_x86_64 ~/bin/finemap
 export PATH=$PATH:$HOME/bin
+cd ..
 ```
 
 See http://www.christianbenner.com/
 
 #### SusieR
 ```
-# install.packages("remotes")
+# In R
 remotes::install_github("stephenslab/susieR")
 ```
 
@@ -50,40 +62,49 @@ See https://github.com/stephenslab/susieR
 ##### Infinitesimal Tools
 Clone the repo:
 ```
+# In bash
+cd tools
 git clone https://github.com/FinucaneLab/fine-mapping-inf.git
 cd fine-mapping-inf
 ```
 Install dependencies:
 ```
+# In bash
 mamba install -c conda-forge -c bioconda setuptools numpy pandas scipy wheel py-bgzip
 ```
 To install SuSiE-inf:
 ```
+# In bash
 cd susieinf
 python setup.py bdist_wheel
 pip install .
+cd ..
 ```
 Similarly, to install FINEMAP-inf:
 ```
+# In bash
 cd finemapinf
 python setup.py bdist_wheel
 pip install .
+cd ..
 ```
 Once completed, run  
 ```
+# In bash
 python run_fine_mapping.py -h
+cd ../..
 ```
 
 See https://github.com/FinucaneLab/fine-mapping-inf
 
 # Usage
 
-The simulations folder contains all of the data and code to 1) Generate simulated summary statistics from a GWAS for 21 different loci using simGWAS and 2) run fine-mapping tools on these summary results and finally 3) analyze accuracy and resource requirements from the various approaches.  
+### Simulations
+The simulations folder contains all of the data and code to 1) Generate simulated summary statistics from a GWAS for 21 different loci using simGWAS and 2) run fine-mapping tools on these summary results and finally 3) examine specific simulations. See the readME in that folder for more details.
 
+### Alzheimer's Disease GWAS
+The AD folder contains the code to finemap the APOE locus for an AD GWAS. See the readME in the folder for further details.
 
-# In progress
-
-Currently simGWAS is running and there are 21 loci available. Additionally, AD GWAS data for the APOE locus from PAN-UKBB are downloaded. SuSiE has been successfully run in a notebook but is being reworked into an R script to improve benchmarking and the ability to test across a greater number of simulations. None of the other fine-mapping methods have been run successfully but will be by next week and put in scripts to allow for fast comparisons of the various methods. The AD GWAS has been difficult to fine-map due to LD matrices, but I am hoping to be able to donwload a better matching LD matrix from a package currenlty downloading. 
 
 # Credits
 Repo created by Weston Elison for CS_284, taught by Melissa Gymrek. 
