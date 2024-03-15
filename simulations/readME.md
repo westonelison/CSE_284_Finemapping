@@ -60,4 +60,20 @@ This makes a directory labeled finemapping_results, which has a directory for ea
 
 run_FINEMAP_1_CV_balanced.sh and run_infinitesimal_1_CV_balanced.sh will run fine-mapping on the results for each vcf for seeds 1-50 for 1 causal variant and a balanced design (20000 cases, 20000 controls). The results are saved in the respective vcf/seed folders. The SuSiE-Inf outputs are in a file along the lines ss_1_CV_20000_ctrl_20000_case.inf.susieinf.bgz, which has a column 'prob' which are pips and a column 'cs' which are the credible sets. The results for FINEMAP-Inf are in ss_1_CV_20000_ctrl_20000_case.inf.finemapinf.bgz. This file has pip in 'prob' but no 'cs' column. ss_1_CV_20000_ctrl_20000_case.finemap.snp has the FINEMAP results per snp including pips in a 'prob' column, and finemapping_results1_CV_20000_ctrl_20000_case.finemap.cred{#} file that is credible sets at different number of causal snps. Additionally, for time for running are saved in ss_1_CV_20000_ctrl_20000_case.inf.time and ss_1_CV_20000_ctrl_20000_case.finemap.time.
 
-For SuSiE
+```
+bash run_FINEMAP_1_CV_balanced.sh
+bash run_infinitesimal_1_CV_balanced.sh
+```
+
+
+For SuSiE there is run_SuSiE.Rscript which will fine-map a single set of summary statistics. The input for this R script are (in order) the vcf the gwas is based on (1KGP_hg19_APOE_1MB.vcf.gz), a seed (42), the number of causal variants (1), number of controls (20000), and the number of cases (20000). 
+
+```
+Rscript --vanilla run_SuSiE.Rscript 1KGP_hg19_APOE_1MB.vcf.gz 42 1 20000 20000
+```
+
+This is wrapped into a bash wrapper called bash run_SuSiE_1_CV_balanced.sh which will fine-map the gwas summary statistics for each vcf for seeds 1-50 for a balanced design (20k control, 20k cases).
+
+```
+bash run_SuSiE_1_CV_balanced.sh
+```
