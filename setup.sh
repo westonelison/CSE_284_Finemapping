@@ -1,4 +1,4 @@
-mamba create -n simGWAS r-base python r-devtools r-ggplot2 r-dplyr r-stringr r-data.table r-ggrepel r-remotes -c conda-forge
+mamba create -n simGWAS r-base python r-devtools r-ggplot2 r-dplyr r-stringr r-data.table r-ggrepel r-remotes -c conda-forge --yes
 mamba activate simGWAS
 
 # Install FINEMAP
@@ -21,7 +21,7 @@ cd tools
 git clone https://github.com/FinucaneLab/fine-mapping-inf.git
 cd fine-mapping-inf
 
-mamba install -c conda-forge -c bioconda setuptools numpy pandas scipy wheel py-bgzip
+mamba install -c conda-forge -c bioconda setuptools numpy pandas scipy wheel py-bgzip --yes
 
 ### SuSiE-Inf
 
@@ -39,7 +39,7 @@ cd ..
 
 python run_fine_mapping.py -h
 
-cd ../..
+cd ..
 
 # SimGWAS
 
