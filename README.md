@@ -8,6 +8,8 @@ To benchmark these results we generate simulation data using [simGWAS](https://g
 Finally, these methods will be tested on signals with a molecularly verified causal effect like APOE in Alzhiemer's Disease.
 
 # Installation Instructions
+
+## Auto Installation
 To run these different tests we need a few different tools. Here is an overview of how I set up my conda evironment to
 contain the packages we need (simGWAS, FINEMAP, SuSiE and SuSiE-Inf/FINEMAP-Inf)  
 
@@ -20,8 +22,7 @@ The entire installation is wrapped up in setup.sh which should be run from this 
 setup.sh
 ```
 
-# Manual Install
-
+## Manual Install
 Create conda environment in bash
 ``` 
 # In bash (terminal)
