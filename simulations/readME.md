@@ -58,3 +58,6 @@ This makes a directory labeled finemapping_results, which has a directory for ea
 
 ### Fine-map
 
+run_FINEMAP_1_CV_balanced.sh and run_infinitesimal_1_CV_balanced.sh will run fine-mapping on the results for each vcf for seeds 1-50 for 1 causal variant and a balanced design (20000 cases, 20000 controls). The results are saved in the respective vcf/seed folders. The SuSiE-Inf outputs are in a file along the lines ss_1_CV_20000_ctrl_20000_case.inf.susieinf.bgz, which has a column 'prob' which are pips and a column 'cs' which are the credible sets. The results for FINEMAP-Inf are in ss_1_CV_20000_ctrl_20000_case.inf.finemapinf.bgz. This file has pip in 'prob' but no 'cs' column. ss_1_CV_20000_ctrl_20000_case.finemap.snp has the FINEMAP results per snp including pips in a 'prob' column, and finemapping_results1_CV_20000_ctrl_20000_case.finemap.cred{#} file that is credible sets at different number of causal snps. Additionally, for time for running are saved in ss_1_CV_20000_ctrl_20000_case.inf.time and ss_1_CV_20000_ctrl_20000_case.finemap.time.
+
+For SuSiE
