@@ -1,0 +1,66 @@
+#!/usr/bin/env Rscript
+args = commandArgs(trailingOnly=TRUE)
+
+library(dplyr)
+library(ggplot2)
+library(susieR)
+library(stringr)
+library(data.table)
+library(ggplot2)
+library(ggrepel)
+
+# test if there is at least one argument: if not, return an error
+if (length(args)==0) {
+  Region <- '1KGP_hg19_APOE_1MB.vcf.gz'
+  seed <- 1
+  n_CV <- 1
+  n_ctrl <- 20000
+  n_case <- 20000
+} else {
+  # default output file
+  Region <- args[1]
+  seed <- as.integer(args[2])
+  n_CV <- as.integer(args[3])
+  n_ctrl <- as.integer(args[4])
+  n_case <- as.integer(args[5])
+}
+
+
+sum.stats <- read.table(paste0('simulation_summary_stats/',
+                               Region,'_',seed,
+                               '/ss_',n_CV,'_CV_',n_ctrl,'_ctrl_',n_case,'_case.tsv'), header=T)
+
+#dim(sum.stats)
+#head(sum.stats)
+
+snps <- unlist(read.table(paste0('simulation_summary_stats/',Region,'_snp_maf_0.05.snp')))
+r <- data.table::fread(paste0('1KGP_Regions/',Region,'.r.maf.order.ld'))
+colnames(r) <- snps
+rownames(r) <- snps
+r <- as.matrix(r)
+
+#dim(r)
+#head(r)
+
+susie_results <- susie_rss(z=sum.stats$z, R=r, n=(n_ctrl + n_case))
+
+sum.stats$pip <- susie_results$pip
+
+write.table(sum.stats,paste0('finemapping_results/',
+                               Region,'_',seed,
+                               '/ss_',n_CV,'_CV_',n_ctrl,'_ctrl_',n_case,'_case.susie.sum.stat.pip'), 
+                        col.names=T, row.names=F, quote=F, sep='\t')
+
+write.table(summary(susie_results)$cs,paste0('finemapping_results/',
+                               Region,'_',seed,
+                               '/ss_',n_CV,'_CV_',n_ctrl,'_ctrl_',n_case,'_case.susie.cs'), 
+                        col.names=T, row.names=F, quote=F, sep='\t')
+
+summary_tab <- summary(susie_results)$vars
+
+rownames(summary_tab) <- snps[summary_tab$variable]
+
+write.table(summary_tab, paste0('finemapping_results/',
+                               Region,'_',seed,
+                               '/ss_',n_CV,'_CV_',n_ctrl,'_ctrl_',n_case,'_case.susie.snp'), 
+                        col.names=T, row.names=F, quote=F, sep='\t')
